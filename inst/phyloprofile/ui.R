@@ -84,8 +84,7 @@ shinyUI(
                         shinyBS::bsButton(
                             "reset_main",
                             "Reset cutoffs",
-                            style = "danger",
-                            icon = icon("backward")
+                            style = "danger"
                         )
                     )
                 )
@@ -141,8 +140,7 @@ shinyUI(
                         shinyBS::bsButton(
                             "reset_selected",
                             "Reset cutoffs",
-                            style = "danger",
-                            icon = icon("backward")
+                            style = "danger"
                         )
                     )
                 )
@@ -570,8 +568,7 @@ shinyUI(
                             shinyBS::bsButton(
                                 "update_btn",
                                 "Update plot",
-                                style = "warning",
-                                icon("refresh")
+                                style = "warning"
                             )
                         )
                     ),
@@ -657,8 +654,7 @@ shinyUI(
                             shinyBS::bsButton(
                                 "plot_custom",
                                 "Update plot",
-                                style = "warning",
-                                icon("refresh")
+                                style = "warning"
                             )
                         )
                         

@@ -66,6 +66,7 @@ if (!requireNamespace("devtools"))
     install.packages("devtools", repos = "http://cran.us.r-project.org")
 devtools::install_github(
     "bionf/phyloprofile",
+    ref = "bioconductor",
     INSTALL_opts = c('--no-lock'),
     build_opts = c('--no-resave-data')
 )
@@ -108,8 +109,8 @@ For both command-based and visualization analyses, users can:
 - dynamically **change the resolution of the analysis** from invidual species
 to phyla or entire kingdoms by collapsing the input taxa into higher systematic
 rank. Species are automatically linked to the NCBI taxonomy, and are ordered
-in increasing taxonomic distance from a user-specified reference taxon.
-*PhyloProfile is able to represent co-orthologs (in-paralogs), if the working
+in increasing taxonomic distance from a user-specified reference taxon. 
+*PhyloProfile is able to represent co-orthologs (in-paralogs), if the working 
 taxonomic rank is the deepest one (e.g. strain or species) that can be
 found in the input taxa.*
 - dynamically **filter data** by applying different thresholds to the integrated
@@ -138,8 +139,8 @@ step in the identification and characterization of novel functional protein
 interaction networks (Pellegrini, 2012). PhyloProfile offers the option to
 cluster genes according to the distance of their phylogenetic profiles.
 
-```{r, fig.show='hold', dev='CairoPDF'}
-### An example for plotting the clustered profiles tree.
+```{r, fig.show='hold'}
+### An example for plotting the clustered profiles tree. 
 ### See ?phyloprofile::get_dendrogram for more details.
 
 #' Load built-in data
@@ -178,7 +179,7 @@ data("full_processed_profile", package="phyloprofile")
 rank_name <- "class"
 ref_taxon <- "Mammalia"
 
-#' Set cutoff for 2 additional variables and the percentage of present species
+#' Set cutoff for 2 additional variables and the percentage of present species 
 #' in each supertaxon
 var1_cutoff <- c(0,1)
 var2_cutoff <- c(0,1)
@@ -186,7 +187,7 @@ percent_cutoff <- c(0,1)
 
 #' Estimate gene age
 estimate_gene_age(
-    full_processed_profile, rank_name, ref_taxon,
+    full_processed_profile, rank_name, ref_taxon, 
     var1_cutoff, var2_cutoff, percent_cutoff
 )
 ```
@@ -209,7 +210,7 @@ processed_profile_data <- full_processed_profile
 rank_name <- "class"
 taxa_core <- c("Mammalia", "Mucorales", "Alphaproteobacteria")
 
-#' Set cutoff for 2 additional variables and the percentage of present species
+#' Set cutoff for 2 additional variables and the percentage of present species 
 #' in each supertaxon
 var1_cutoff <- c(0.75, 1.0)
 var2_cutoff <- c(0.75, 1.0)
@@ -248,8 +249,8 @@ decide on reasonable filtering thresholds, PhyloProfile provides a function to
 plot the distributions of the values incurred by the integrated information
 layers.
 
-```{r, fig.show='hold', dev='CairoPDF'}
-### An example for plotting the distribution of the 1st additional variable.
+```{r, fig.show='hold'}
+### An example for plotting the distribution of the 1st additional variable. 
 ### See ?phyloprofile::create_var_dist_plot for more details.
 
 #' Load built-in data
@@ -284,8 +285,8 @@ create_var_dist_plot(
 
 # Examples
 ## Process raw input
-Process raw input (in different format) into a dataframe that contains all
-required information for the phylogenetic profile analysis.
+Process raw input (in different format) into a dataframe that contains all 
+required information for the phylogenetic profile analysis. 
 
 ```{r}
 #' Load built-in data
@@ -302,19 +303,19 @@ ref_taxon <- "Mammalia"
 #' Input a user-defined taxonomy tree to replace NCBI taxonomy tree (optional)
 taxa_tree <- NULL
 
-#' Choose how to aggregate the additional variables when pocessing the data
+#' Choose how to aggregate the additional variables when pocessing the data 
 #' into supertaxon
 var1_aggregate_by <- "max"
 var2_aggregate_by <- "mean"
 
-#' Set cutoffs for for percentage of species present in a supertaxon,
+#' Set cutoffs for for percentage of species present in a supertaxon, 
 #' allowed number of co orthologs, and cutoffs for the additional variables
 percent_cutoff <- c(0.0, 1.0)
 coortholog_cutoff_max <- 10
 var1_cutoff <- c(0.75, 1.0)
 var2_cutoff <- c(0.5, 1.0)
 
-#' Choose the relationship of the additional variables, if they are related to
+#' Choose the relationship of the additional variables, if they are related to 
 #' the orthologous proteins or to the species
 var1_relation <- "protein"
 var2_relation <- "species"
@@ -347,7 +348,7 @@ head(profile_data)
 
 ## Create profile plot
 Generate phylogenetic profile heatmap after processing the raw input file.
-```{r, fig.show='hold', dev='CairoPDF'}
+```{r, fig.show='hold'}
 #' Load built-in processed data
 data("full_processed_profile", package="phyloprofile")
 
@@ -396,7 +397,7 @@ gene_highlight <- "OG_1019"
 
 ## Create protein domain architecture plot
 Generate the domain architecture plot for a gene of interest and its orthologs.
-```{r, fig.show='hold', dev='CairoPDF'}
+```{r, fig.show='hold'}
 #' Load protein domain architecture file
 domain_file <- system.file(
     "extdata", "domain_files/OG_1009.domains",
@@ -434,7 +435,7 @@ input_taxonName <- phyloprofile::get_input_taxa_name(rank_name, input_taxonID)
 head(input_taxonName)
 ```
 
-**Get taxonomy info for list of input taxa and sort it based on the taxonomy**
+**Get taxonomy info for list of input taxa and sort it based on the taxonomy** 
 **distance to a reference taxon**
 ```{r}
 #' Get list of taxon IDs and names for input profile

@@ -5,7 +5,7 @@
 [![presented at: GCB2018](https://img.shields.io/badge/presented%20at-GCB2018-green.svg?style=flat)](http://gcb2018.de)
 [![language: R](https://img.shields.io/badge/language-R-blue.svg?style=flat)](https://www.r-project.org/)
 [![license: MIT](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://opensource.org/licenses/MIT)
-[![Travis-CI Build Status](https://travis-ci.org/BIONF/PhyloProfile.svg?branch=master)](https://travis-ci.org/BIONF/PhyloProfile)
+[![Travis-CI Build Status](https://travis-ci.org/BIONF/PhyloProfile.svg?branch=bioconductor)](https://travis-ci.org/BIONF/PhyloProfile)
 
 [![](www/posterSub.png)](https://f1000research.com/posters/6-1782)
 [Click here for the full PDF version of the BOSC2017 poster](https://f1000research.com/posters/6-1782)
@@ -49,32 +49,25 @@ Once that is out of the way you can now install *PhyloProfile*:
 
 ```r
 library(devtools)
-install_github("bionf/phyloprofile", INSTALL_opts = c('--no-lock'), build_opts = c('--no-resave-data'))
+install_github("bionf/phyloprofile", ref = "bioconductor", INSTALL_opts = c('--no-lock'), build_opts = c('--no-resave-data'))
 ```
-The step can take a while, as the tool will try do download and install all necessary dependencies automatically. *(Note: Depending on your system this sometimes fails, please check the console log for error messages concerning the dependency installation)*
+The initial start can take a while, as the tool will try do download and install all necessary dependencies automatically. *(Note: Depending on your system this sometimes fails, please check the console log for error messages concerning the dependency installation)*
 
-## Start PhyloProfile
-Simply run
+To start PhyloProfile simply run:
+
 ```r
 library(phyloprofile)
 run_phyloprofile()
 ```
 Check your web browser, *PhyloProfile* will be displayed there ;-) For the first time running, the tool will download a [pre-caculated taxonomy data](https://github.com/BIONF/phyloprofile-data). Please be patient until you see a message for uploading input files.
 
-_**Please check our [detailed instructions](https://github.com/BIONF/PhyloProfile/wiki/Installation) if you encounter any problems while installing and starting the program.**_
-
 # Input Data
 *PhyloProfile* can read a number of different input files, including multi-FASTA files, regular tab-separated files, OMA ID list or *OrthoXML*. The additional information layers can be embedded in the OrthoXML or be provided separately.
 
 We described all suppported input formats in section [Input Data](https://github.com/BIONF/PhyloProfile/wiki/Input-Data) in our [PhyloProfile's Wiki](https://github.com/BIONF/PhyloProfile/wiki).
 
-# Walkthrough and Examples
-Read the [walkthrough slides](https://github.com/BIONF/PhyloProfile/wiki/Walkthrough) to explore the functionality of the *PhyloProfile* GUI.
-
-Check the vignette for learning how to use PhyloProfile's functions in some specific use-cases:
-```r
-browseVignettes("phyloprofile")
-```
+# Walkthrough
+Read the [walkthrough slides](https://github.com/BIONF/PhyloProfile/wiki/Walkthrough) to explore the functionality of *PhyloProfile*.
 
 # Bugs
 Any [bug reports or comments, suggestions](https://github.com/BIONF/PhyloProfile/blob/master/CONTRIBUTING.md) are highly appreciated. Please [open an issue on GitHub](https://github.com/BIONF/PhyloProfile/issues/new) or be in touch via email.

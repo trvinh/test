@@ -3,7 +3,7 @@ packages <- c("ggplot2", "reshape2",
               "plyr", "dplyr", "tidyr", "scales", "grid",
               "gridExtra", "ape", "stringr", "gtable",
               "dendextend", "gplots", "data.table",
-              "taxize", "zoo", "RCurl", "energy", "Cairo")
+              "taxize", "zoo", "RCurl", "energy")
 source("R/functions.R")
 install_packages(packages)
 lapply(packages, library, character.only = TRUE)
@@ -20,10 +20,7 @@ source_files = list.files(path = "R",
 lapply(source_files, source, .GlobalEnv)
 
 #' set size limit for input (9999mb)
-options(
-    shiny.maxRequestSize = 9999 * 1024 ^ 2, # size limit for input 9999mb
-    shiny.usecairo = TRUE
-)
+options(shiny.maxRequestSize = 9999 * 1024 ^ 2)  # size limit for input 9999mb
 
 #' MAIN SERVER ================================================================
 shinyServer(function(input, output, session) {
@@ -392,7 +389,7 @@ shinyServer(function(input, output, session) {
                       value = "Variable 1",
                       width = "100%",
                       placeholder = "Name of first variable")
-        } else {
+        } else{
             textInput("var1_id", h5("1st variable:"),
                       value = colnames(long_dataframe)[4],
                       width = "100%",
@@ -408,7 +405,7 @@ shinyServer(function(input, output, session) {
                       value = "Variable 2",
                       width = "100%",
                       placeholder = "Name of second variable")
-        } else {
+        } else{
             textInput("var2_id", h5("2st variable:"),
                       value = colnames(long_dataframe)[5],
                       width = "100%",
@@ -436,7 +433,7 @@ shinyServer(function(input, output, session) {
     # * check the existance of the input concatenate fasta file ----------------
     output$concat_fasta.exist_check <- renderUI({
         if (is.null(input$concat_fasta)) return()
-        else {
+        else{
             f <- input$concat_fasta$datapath
             if (!file.exists(f)) {
                 helpText("File not exists!!")
@@ -601,7 +598,7 @@ shinyServer(function(input, output, session) {
     observeEvent(input$rank_select,  ({
         if (input$rank_select == "") {
             updateButton(session, "do", disabled = TRUE)
-        } else {
+        } else{
             unkTaxa <- unkTaxa()
             if (length(unkTaxa) == 0) {
                 updateButton(session, "do", disabled = FALSE)
@@ -880,7 +877,7 @@ shinyServer(function(input, output, session) {
 
         if (is.null(long_dataframe)) {
             inputTaxa <- c("NA")
-        } else {
+        } else{
             inputTaxa <- levels(long_dataframe$ncbiID)
         }
 
@@ -900,6 +897,10 @@ shinyServer(function(input, output, session) {
                 if (info$size == 0) {
                     return(inputTaxa)
                 } else {
+                    # get list of all available taxon (from /data/rankList.txt)
+                    # pipe_cmd <- paste0("cut -f 1 ", getwd(),
+                    #                    "/data/rankList.txt")
+                    # allTaxa <- unlist((read.table(pipe(pipe_cmd))))
                     rankList_file <- paste0(getwd(), "/data/rankList.txt")
                     allTaxa <- as.factor(
                         unlist(
@@ -918,6 +919,9 @@ shinyServer(function(input, output, session) {
                     unkTaxa$id <- substring(unkTaxa$TaxonID, 5)
                     unkTaxa$Source <- "ncbi"
 
+                    # pipe_ncbi <- paste0("cut -f 1 ", getwd(),
+                    #                     "/data/taxonNamesFull.txt")
+                    # ncbiTaxa <- unlist((read.table(pipe(pipe_ncbi))))
                     nameFull_file <- paste0(getwd(), "/data/taxonNamesFull.txt")
                     ncbiTaxa <- as.factor(
                         unlist(
@@ -939,6 +943,10 @@ shinyServer(function(input, output, session) {
                         }
                     }
 
+                    # check for new taxa in newTaxa.txt file
+                    # pipe_new <- paste0("cut -f 1 ", getwd(),
+                    #                    "/data/newTaxa.txt")
+                    # newTaxa <- unlist((read.table(pipe(pipe_new))))
                     newTaxa_file <- paste0(getwd(), "/data/newTaxa.txt")
                     newTaxa <- as.factor(
                         unlist(
@@ -1270,7 +1278,7 @@ shinyServer(function(input, output, session) {
     # * output invalid NCBI ID -------------------------------------------------
     output$invalidID.output <- renderTable({
         if (is.null(invalidID())) return()
-        else {
+        else{
             outDf <- invalidID()
             colnames(outDf) <- c("Invalid ID(s)", "Type")
             return(outDf)
@@ -1610,8 +1618,9 @@ shinyServer(function(input, output, session) {
 
     # * heatmap data input -----------------------------------------------------
     dataHeat <- reactive({
-        {
+        if (input$tabs == "Customized profile") {
             input$plot_custom
+        } else {
             input$update_btn
         }
 
@@ -1680,13 +1689,22 @@ shinyServer(function(input, output, session) {
     clusteredDataHeat <- reactive({
         dataHeat <- dataHeat()
         dat <- get_profiles()
-        
+        cutoff <- (input$var1[1])*100
+
         # do clustering based on distance matrix
+
         row.order <- hclust(get_distance_matrix_profiles(),
                             method = input$cluster_method)$order
 
+        # col.order <- hclust(
+        #   get_distance_matrix(t(dat),
+        #                       method = input$dist_method,
+        #                       (input$var1[1])*100),
+        #   method = input$cluster_method)$order
+
         # re-order distance matrix accoring to clustering
         dat_new <- dat[row.order, ] #col.order
+        #dat_new <- dat[row.order, col.order]
 
         # return clustered gene ID list
         clustered_gene_ids <- as.factor(row.names(dat_new))
@@ -1853,7 +1871,8 @@ shinyServer(function(input, output, session) {
         }
         if (v$doPlot == FALSE) {
             return(selectInput("in_seq", "", "all"))
-        } else {
+        }
+        else{
             # full list
             data <- as.data.frame(get_data_filtered())
             data$geneID <- as.character(data$geneID)
@@ -1865,11 +1884,14 @@ shinyServer(function(input, output, session) {
                 out <- as.list(selectedgene_age())
             } else if (input$add_cluster_cutom_profile == TRUE) {
                 out <- as.list(brushed_clusterGene())
-            } else if (input$add_core_gene_custom_profile == TRUE) {
+            }
+            else if (input$add_core_gene_custom_profile == TRUE) {
                 out <- as.list(core_geneDf())
-            } else if (input$add_gc_genes_custom_profile == TRUE) {
+            }
+            else if (input$add_gc_genes_custom_profile == TRUE) {
                 out <- as.list(gene_list_gc())
-            } else {
+            }
+            else {
                 if (!is.null(fileCustom)) {
                     customList <- as.data.frame(
                         read.table(file = fileCustom$datapath, header = FALSE)
@@ -1881,7 +1903,8 @@ shinyServer(function(input, output, session) {
 
             if (length(out) > 0) {
                 create_select_gene("in_seq", out, out)
-            } else {
+            }
+            else {
                 create_select_gene("in_seq", outAll, outAll[1])
             }
         }
@@ -1904,7 +1927,7 @@ shinyServer(function(input, output, session) {
 
         if (is.null(filein)) return(selectInput("in_taxa", "", "all"))
         if (v$doPlot == FALSE) return(selectInput("in_taxa", "", "all"))
-        else {
+        else{
             choice <- input_taxonName()
             choice$fullName <- as.factor(choice$fullName)
 
@@ -1931,7 +1954,7 @@ shinyServer(function(input, output, session) {
     output$same_profile <- reactive({
         if (v$doPlot == FALSE) return(FALSE)
         if (length(input$in_seq[1]) == 0) return(FALSE)
-        else {
+        else{
             if (input$in_seq[1] == "all" & input$in_taxa[1] == "all") {
                 return(TRUE)
             }
@@ -2061,11 +2084,11 @@ shinyServer(function(input, output, session) {
         }
 
         if (is.null(info)) return()
-        else {
+        else{
             orthoID <- info[2]
 
             if (is.na(orthoID)) return()
-            else {
+            else{
                 # if (orthoID=="NA") {orthoID <- info[2]}
                 ## print output
                 a <- toString(paste("Seed-ID:", info[1]))
@@ -2109,7 +2132,7 @@ shinyServer(function(input, output, session) {
         }
 
         if (is.null(info)) return()
-        else {
+        else{
             ### get info for present taxa in selected supertaxon (1)
             plotTaxon <- info[3]
             plotGeneID <- info[1]
@@ -2167,7 +2190,7 @@ shinyServer(function(input, output, session) {
         info <- point_infoDetail() # info = seedID, orthoID, var1
 
         if (is.null(info)) return()
-        else {
+        else{
             data <- get_data_filtered()
 
             seqID <- toString(info[2])
@@ -3026,7 +3049,7 @@ shinyServer(function(input, output, session) {
             input$add_core_gene_custom_profile == TRUE |
             input$add_cluster_cutom_profile == TRUE) {
             shinyjs::disable("add_gc_genes_custom_profile")
-        } else {
+        }else{
             shinyjs::enable("add_gc_genes_custom_profile")
         }
     })
